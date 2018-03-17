@@ -32,13 +32,13 @@
 			var overflowY = style.getPropertyValue('overflow-y');
 			var overflowX = style.getPropertyValue('overflow-x');
 			var height = parseInt(style.getPropertyValue('height'), 10);
-			
+
 			// Determine if the element should scroll
 			var isScrollable = isScrollableCheck(scrolling, overflowY, overflowX);
-			var canScroll = canScrollCheck(overflowY, el);
+			var canScroll = canScrollCheck(overflowY, overflowX, el);
 
 			if (isScrollable && canScroll) {
-				
+
 				if (overflowY === 'auto' || overflowY === 'scroll') {
 					horScroll(evt, height, el)
 				} else {
@@ -66,7 +66,7 @@
 
 		var Ydiff = Math.abs(startY-curY)
 		var Xdiff = Math.abs(startX-curX)
-		
+
 		// prevent if the user tried to scroll vertical in horizontal area
 		if (Ydiff > Xdiff) {
 			evt.preventDefault();
@@ -89,12 +89,14 @@
 		}
 	}
 
-	var canScrollCheck = function(overflowY, el){
-		if (overflowY === 'auto' || overflowY === 'scroll') {
-			return el.scrollHeight > el.offsetHeight	
+	var canScrollCheck = function(overflowY, overflowX, el){
+		// check both scrolling directions
+		if (overflowY === 'auto' || overflowY === 'scroll' || overflowX === 'auto' || overflowX ==='scroll') {
+			// space in either dimension means we can scroll
+			return el.scrollHeight > el.offsetHeight || el.scrollWidth > el.offsetWidth;
+		} else {
+			return false
 		}
-
-		return el.scrollWidth > el.offsetWidth;
 	}
 
 	var isScrollableCheck = function(scrolling, overflowY, overflowX){
